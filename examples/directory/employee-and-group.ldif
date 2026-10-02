@@ -1,0 +1,22 @@
+dn: uid=employee01,ou=Employees,dc=dhone,dc=in
+changetype: add
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+uid: employee01
+cn: Dhone Employee One
+sn: One
+givenName: Dhone Employee
+displayName: Dhone Employee One
+employeeNumber: EMP001
+employeeType: full-time
+description: Fictional employee for the Dhone IAM lab
+
+dn: cn=Employees,ou=groups,dc=dhone,dc=in
+changetype: add
+objectClass: top
+objectClass: groupOfNames
+cn: Employees
+description: Employee membership for Dhone lab applications
+member: uid=employee01,ou=Employees,dc=dhone,dc=in
