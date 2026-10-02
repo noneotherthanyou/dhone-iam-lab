@@ -1,0 +1,71 @@
+# Dhone.in learning lab. Run only after preparing license and secret files.
+# Image tag/platform availability checked on 2026-09-18.
+name: dhone-directory
+
+services:
+  pingdirectory:
+    image: pingidentity/pingdirectory:2607-11.1.0.0
+    platform: linux/amd64
+    container_name: pingdirectory
+    hostname: pd.dhone.in
+    restart: "no"
+    mem_limit: 2g
+    cpus: 2.0
+    stop_grace_period: 60s
+    environment:
+      PING_IDENTITY_ACCEPT_EULA: "YES"
+      ORCHESTRATION_TYPE: compose
+      USER_BASE_DN: "dc=dhone,dc=in"
+      ROOT_USER: "Directory Manager"
+      ROOT_USER_DN: "cn=Directory Manager"
+      ROOT_USER_PASSWORD_FILE: /run/secrets/directory-root-password
+      ADMIN_USER_PASSWORD_FILE: /run/secrets/directory-admin-password
+      ENCRYPTION_PASSWORD_FILE: /run/secrets/directory-encryption-password
+      MAX_HEAP_SIZE: 1024m
+      LDAP_PORT: "1389"
+      LDAPS_PORT: "1636"
+      HTTPS_PORT: "1443"
+      PD_ENGINE_PRIVATE_HOSTNAME: pd.dhone.in
+      PD_ENGINE_PUBLIC_HOSTNAME: localhost
+      MAKELDIF_USERS: "0"
+      SERVER_PROFILE_UPDATE: "false"
+      PD_REBUILD_ON_RESTART: "false"
+      VERBOSE: "false"
+      PING_DEBUG: "false"
+    ports:
+      - "127.0.0.1:1389:1389"
+      - "127.0.0.1:1636:1636"
+      - "127.0.0.1:1443:1443"
+    volumes:
+      - directory-data:/opt/out
+      - type: bind
+        source: ./license/PingDirectory.lic
+        target: /opt/in/pd.profile/server-root/pre-setup/PingDirectory.lic
+        read_only: true
+        bind:
+          create_host_path: false
+    secrets:
+      - directory-root-password
+      - directory-admin-password
+      - directory-encryption-password
+    networks:
+      identitylab:
+        aliases:
+          - pd.dhone.in
+
+secrets:
+  directory-root-password:
+    file: ./secrets/root-password
+  directory-admin-password:
+    file: ./secrets/admin-password
+  directory-encryption-password:
+    file: ./secrets/encryption-password
+
+volumes:
+  directory-data:
+    name: dhone-pingdirectory-data
+
+networks:
+  identitylab:
+    external: true
+    name: identitylab
