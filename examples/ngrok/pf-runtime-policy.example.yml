@@ -1,0 +1,13 @@
+# Replace the placeholder in a PRIVATE working copy before use.
+# No account token, live hostname or credentials belong in this template.
+on_http_request:
+  - actions:
+      - type: remove-headers
+        config:
+          headers:
+            - x-dhone-public-host
+      - type: add-headers
+        config:
+          headers:
+            host: "localhost:9031"
+            x-dhone-public-host: "YOUR-NGROK-HOSTNAME:443"
